@@ -7,6 +7,10 @@ import { AcademicSemesterValidations } from "./academicSemester.validation";
 
 router.post('/create-academic-semester', validationSchema(AcademicSemesterValidations.createAcdemicSemesterValidationSchema), AcademicSemesterController.createAcademicSemester)
 
+router.patch('/update-academic-semester/:id', validationSchema( AcademicSemesterValidations.updateAcademicSemesterValidationSchema) , AcademicSemesterController.updateAcademicSemesterById)
 
+router.get('/', AcademicSemesterController.getAllAcademicSemesters)
 
-export const AcademicSemesterRoutes = router;
+router.get('/:id', AcademicSemesterController.getAcademicSemesterById)
+
+export const AcademicSemesterRoutes = router; 
