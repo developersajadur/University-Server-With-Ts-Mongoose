@@ -2,14 +2,32 @@ import mongoose from 'mongoose';
 import { Student } from './student.model';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { studentSearchableFields } from './student.constant';
 
-const getAllStudentsFromDB = async () => {
-  const result = await Student.find().populate('admissionSemester').populate({
-    path: 'academicDepartment',
-    populate: 'academicFaculty'
-  })
+const getAllStudentsFromDB =async (query: Record<string, unknown>) => {
+
+  const studentQuery = new QueryBuilder(
+    Student.find()
+      .populate('admissionSemester')
+      .populate({
+        path: 'academicDepartment',
+        populate: {
+          path: 'academicFaculty',
+        },
+      }),
+    query,
+  )
+    .search(studentSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await studentQuery.modelQuery;
   return result;
-}; 
+};
+
 
 const getSingleStudentFromDB = async (id: string) => {
   const result = await Student.findOne({id}).populate('admissionSemester').populate({
